@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+  </ribbon>
+  <contextMenus>
+    <contextMenu idMso="ContextMenuCalendarView">
+      <button id="ContextMenuExport"
+          label="Export Specified Dates"
+          onAction="ExportButtonClick"/>
+    </contextMenu>
+  </contextMenus>
+</customUI>
