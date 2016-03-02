@@ -41,10 +41,6 @@ namespace Outlook2010_cal_export_adding
 
         public context_menu_export()
         {
-            //control.Context.
-            //Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.
-            
-            //Outlook.CalendarSharing cls = (Outlook.CalendarSharing) 
         }
 
         #region IRibbonExtensibility Members
@@ -66,7 +62,10 @@ namespace Outlook2010_cal_export_adding
 
         public void ExportButtonClick(Office.IRibbonControl control)
         {
+            //control.Context.
+            //Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.
             
+            //Outlook.CalendarSharing cls = (Outlook.CalendarSharing) 
         }
 
         #endregion
