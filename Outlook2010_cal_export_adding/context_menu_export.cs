@@ -41,6 +41,10 @@ namespace Outlook2010_cal_export_adding
 
         public context_menu_export()
         {
+            //control.Context.
+            //Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.
+            
+            //Outlook.CalendarSharing cls = (Outlook.CalendarSharing) 
         }
 
         #region IRibbonExtensibility Members
@@ -91,19 +95,19 @@ namespace Outlook2010_cal_export_adding
 
         #endregion
 
-        public Image GetIcon(Office.IRibbonControl control)
-        {
-            return Outlook2010_cal_export_adding.Properties.Resources.icon;
-        }
+        //public Image GetIcon(Office.IRibbonControl control)
+        //{
+        //    return Outlook2010_cal_export_adding.Properties.Resources.icon;
+        //}
 
-        public string GetSynchronisationLabel(Office.IRibbonControl control)
-        {
-            return "Synchronize";
-        }
+        //public string GetSynchronisationLabel(Office.IRibbonControl control)
+        //{
+        //    return "Synchronize";
+        //}
 
-        public void ShowMessageClick(Office.IRibbonControl control)
-        {
-            System.Windows.Forms.MessageBox.Show("You've clicked the synchronize context menu item", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+        //public void ShowMessageClick(Office.IRibbonControl control)
+        //{
+        //    System.Windows.Forms.MessageBox.Show("You've clicked the synchronize context menu item", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //}
     }
 }
