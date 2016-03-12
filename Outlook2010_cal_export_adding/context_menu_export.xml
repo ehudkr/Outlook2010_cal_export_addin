@@ -4,6 +4,7 @@
   </ribbon>
   <contextMenus>
     <contextMenu idMso="ContextMenuCalendarView">
+      <menuSeparator id="MySeparator" />
       <button id="ContextMenuExport"
           label="Export Specified Dates"
           onAction="ExportButtonClick"/>

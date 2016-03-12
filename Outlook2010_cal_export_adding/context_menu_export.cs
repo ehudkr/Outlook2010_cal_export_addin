@@ -35,11 +35,6 @@ namespace Outlook2010_cal_export_adding
     {
         private Office.IRibbonUI ribbon;
 
-        protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
-        {
-            return new context_menu_export();
-        }
-
         public context_menu_export()
         {
         }
@@ -48,7 +43,13 @@ namespace Outlook2010_cal_export_adding
 
         public string GetCustomUI(string ribbonID)
         {
-            return GetResourceText("Outlook2010_cal_export_adding.Ribbon1.xml");
+            string ribbonXML = String.Empty;
+            if (ribbonID == "Microsoft.Outlook.Explorer" || ribbonID == "Microsoft.Outlook.Appointment")
+            {
+                ribbonXML = GetResourceText("Outlook2010_cal_export_adding.context_menu_export.xml");
+            }
+            return ribbonXML;
+            //return "ContextMenuCalendarView";
         }
 
         #endregion
@@ -223,14 +224,14 @@ namespace Outlook2010_cal_export_adding
         //    return Outlook2010_cal_export_adding.Properties.Resources.icon;
         //}
 
-        //public string GetSynchronisationLabel(Office.IRibbonControl control)
-        //{
-        //    return "Synchronize";
-        //}
+        public string GetSynchronisationLabel(Office.IRibbonControl control)
+        {
+            return "Synchronize";
+        }
 
-        //public void ShowMessageClick(Office.IRibbonControl control)
-        //{
-        //    System.Windows.Forms.MessageBox.Show("You've clicked the synchronize context menu item", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //}
+        public void ShowMessageClick(Office.IRibbonControl control)
+        {
+            System.Windows.Forms.MessageBox.Show("You've clicked the synchronize context menu item", "Information", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+        }
     }
 }

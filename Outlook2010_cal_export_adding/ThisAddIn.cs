@@ -10,6 +10,11 @@ namespace Outlook2010_cal_export_adding
 {
     public partial class ThisAddIn
     {
+        protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            return new context_menu_export();
+        }
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
         }
