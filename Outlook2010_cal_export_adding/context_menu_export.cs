@@ -117,54 +117,40 @@ namespace Outlook2010_cal_export_adding
             {
                 var csvWriter = new StringBuilder();
                 // Header format by Google Calendar: https://support.google.com/calendar/answer/37118?hl=en
-                var headerLine = string.Format("{0},{1},{2}.{3},{4},{5},{6},{7},{8},{9}",
-                                               "Subject", "Start date", "Start time", "End date", "End time",
+                var headerLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                                               "Subject", "Start Date", "Start Time", "End Date", "End Time",
                                                "All day event", "Description", "Location", "Private");
                 csvWriter.AppendLine(headerLine);
                 foreach (Outlook.AppointmentItem item in rangeAppts)
                 {
+                    string apptBody = "";
+                    try
+                    {   // appointment has content (i.e. body or description)
+                        apptBody = item.Body.ToString();
+                    }
+                    catch
+                    { }
                     // Outputs event's wanted properties:
-                    var newLine = string.Format("{0},{1},{2}.{3},{4},{5},{6},{7},{8},{9}",
+                    var newLine = string.Format(@"""{0}"",""{1}"",""{2}"",""{3}"",""{4}"",""{5}"",""{6}"",""{7}"",""{8}""",
                                                 item.Subject.ToString(), 
-                                                item.Start.Date.ToString(), item.Start.TimeOfDay.ToString(),
-                                                item.End.Date.ToString(), item.End.TimeOfDay.ToString(), 
-                                                item.AllDayEvent.ToString(), item.FormDescription.ToString(), 
-                                                item.Location, "");
+                                                item.Start.Date.ToString("dd-MM-yyyy"), item.Start.TimeOfDay.ToString(),
+                                                item.End.Date.ToString("dd-MM-yyyy"), item.End.TimeOfDay.ToString(), 
+                                                item.AllDayEvent.ToString(), 
+                                                apptBody, item.Location, "");
+                    
                     csvWriter.AppendLine(newLine);
                     //Debug.WriteLine("Subject: " + appt.Subject + " Start: " + appt.Start.ToString("g"));
                 }
 
                 // Write to file:
                 string desktopath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                desktopath = desktopath + @"\Agenda " + dateStart.Date.ToString() + ".csv";
-                File.WriteAllText(desktopath, csvWriter.ToString());
-                //File.AppendAllText(somepath, csvWriter.ToString());
+                string fileName = "Agenda_" + dateStart.Date.ToString("dd-MM") +"~" + dateEnd.Date.ToString("dd-MM") + ".csv";
+                desktopath = System.IO.Path.Combine(desktopath, fileName);
+                File.WriteAllText(desktopath, csvWriter.ToString(), Encoding.UTF8);
+
+                //TODO success message
             }
 
-
-
-            ////control.Context.
-            ////Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.
-
-            ////Outlook.CalendarSharing cls = (Outlook.CalendarSharing) 
-
-            //// Iterate through all the events (appointment-items) in the calendar
-            //Outlook.Application oApp = new Outlook.Application();
-            //Outlook.NameSpace mapiNamespace = oApp.GetNamespace("MAPI"); ;
-            //Outlook.MAPIFolder CalendarFolder = mapiNamespace.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar);
-            //Outlook.Items outlookCalendarItems = CalendarFolder.Items;
-
-            //outlookCalendarItems.Sort("Start");
-            ////include recurring events (just a "normal" events i.e once per time it occurs)
-            ////Have to Sort by Start before setting IncludeRecurrences.
-            //outlookCalendarItems.IncludeRecurrences = true;
-            //foreach (Outlook.AppointmentItem item in outlookCalendarItems)
-            //{
-            //    if (item.Start >= dateStart && item.End <= dateEnd)
-            //    {
-
-            //    }
-            //}
         }
 
         #endregion
@@ -197,6 +183,12 @@ namespace Outlook2010_cal_export_adding
             catch { return null; }
         }
 
+        private string convertToUTF8(string str)
+        {
+            byte[] bytes = Encoding.Default.GetBytes(str);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
         private static string GetResourceText(string resourceName)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
@@ -218,20 +210,5 @@ namespace Outlook2010_cal_export_adding
         }
 
         #endregion
-
-        //public Image GetIcon(Office.IRibbonControl control)
-        //{
-        //    return Outlook2010_cal_export_adding.Properties.Resources.icon;
-        //}
-
-        public string GetSynchronisationLabel(Office.IRibbonControl control)
-        {
-            return "Synchronize";
-        }
-
-        public void ShowMessageClick(Office.IRibbonControl control)
-        {
-            System.Windows.Forms.MessageBox.Show("You've clicked the synchronize context menu item", "Information", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
-        }
     }
 }
