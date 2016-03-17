@@ -6,7 +6,7 @@
     <contextMenu idMso="ContextMenuCalendarView">
       <menuSeparator id="MySeparator" />
       <button id="ContextMenuExport"
-          label="Export Specified Dates"
+          label="Export specified dates to file || ייצא תאריכים לקובץ"
           onAction="ExportButtonClick"/>
     </contextMenu>
   </contextMenus>

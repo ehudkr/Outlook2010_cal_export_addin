@@ -74,9 +74,6 @@ namespace Outlook2010_cal_export_adding
                 Outlook.CalendarView calView = view as Outlook.CalendarView;
                 dateStart = calView.SelectedStartTime;
                 dateEnd = calView.SelectedEndTime;
-                //DateTime end = start.AddDays(7); - use only a click on Sunday and export one week automatically ?
-                //Automate date time from sunday midnight to saturday 23:59 ?
-                //Set the hours of properly - full from sunday midnight to saturday 23:59? or leave it to the user?
             }
             else
             {
@@ -107,11 +104,16 @@ namespace Outlook2010_cal_export_adding
 
                     // Access the calendar and export events:
 
+            //Outlook.Folder calFolder = 
+            //    Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar) 
+            //    as Outlook.Folder;
             Outlook.Folder calFolder = 
-                Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar) 
-                as Outlook.Folder;
+                Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder 
+                as Outlook.Folder;      // Get currently viewed folder (and not default folder as commented-out above)
+
             // Get the items in the wanted range of dates:
             Outlook.Items rangeAppts = GetAppointmentsInRange(calFolder, dateStart, dateEnd);
+
             // Iterate over wanted (filtered) events (appointment-items) and write them to file:
             if (rangeAppts != null)
             {
@@ -128,8 +130,8 @@ namespace Outlook2010_cal_export_adding
                     {   // appointment has content (i.e. body or description)
                         apptBody = item.Body.ToString();
                     }
-                    catch
-                    { }
+                    catch { }
+
                     // Outputs event's wanted properties:
                     var newLine = string.Format(@"""{0}"",""{1}"",""{2}"",""{3}"",""{4}"",""{5}"",""{6}"",""{7}"",""{8}""",
                                                 item.Subject.ToString(), 
@@ -146,11 +148,45 @@ namespace Outlook2010_cal_export_adding
                 string desktopath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 string fileName = "Agenda_" + dateStart.Date.ToString("dd-MM") +"~" + dateEnd.Date.ToString("dd-MM") + ".csv";
                 desktopath = System.IO.Path.Combine(desktopath, fileName);
-                File.WriteAllText(desktopath, csvWriter.ToString(), Encoding.UTF8);
 
-                //TODO success message
+                try
+                {
+                    File.WriteAllText(desktopath, csvWriter.ToString(), Encoding.UTF8);
+                    System.Windows.Forms.MessageBox.Show("!קובץ נוצר בהצלחה",
+                                                         "Success",
+                                                         System.Windows.Forms.MessageBoxButtons.OK,
+                                                         System.Windows.Forms.MessageBoxIcon.None,
+                                                         System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                         System.Windows.Forms.MessageBoxOptions.RightAlign);
+                }
+                catch (IOException)
+                {
+                    System.Windows.Forms.MessageBox.Show("שגיאה בעת יצירת או פתיחת הקובץ",
+                                                         "IOException", 
+                                                         System.Windows.Forms.MessageBoxButtons.OK,
+                                                         System.Windows.Forms.MessageBoxIcon.Error,
+                                                         System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                         System.Windows.Forms.MessageBoxOptions.RightAlign);
+                }
+                catch (System.Security.SecurityException)
+                {
+                    System.Windows.Forms.MessageBox.Show("אין הרשאות ליצירת קובץ (נסה לעבוד כאדמין)",
+                                                         "Permission Exception",
+                                                         System.Windows.Forms.MessageBoxButtons.OK,
+                                                         System.Windows.Forms.MessageBoxIcon.Error,
+                                                         System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                         System.Windows.Forms.MessageBoxOptions.RightAlign);
+                }
+                catch (Exception)
+                {
+                    System.Windows.Forms.MessageBox.Show("שגיאה בייצור הקובץ",
+                                                         "General Exception",
+                                                         System.Windows.Forms.MessageBoxButtons.OK,
+                                                         System.Windows.Forms.MessageBoxIcon.Error,
+                                                         System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                                                         System.Windows.Forms.MessageBoxOptions.RightAlign);
+                }
             }
-
         }
 
         #endregion
