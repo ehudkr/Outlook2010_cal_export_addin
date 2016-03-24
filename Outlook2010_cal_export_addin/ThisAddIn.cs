@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 
-namespace Outlook2010_cal_export_adding
+namespace Outlook2010_cal_export_addin
 {
     public partial class ThisAddIn
     {

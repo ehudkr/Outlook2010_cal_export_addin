@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 #pragma warning disable 414
-namespace Outlook2010_cal_export_adding {
+namespace Outlook2010_cal_export_addin {
     
     
     /// 

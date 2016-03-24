@@ -28,7 +28,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 // For more information, see the Ribbon XML documentation in the Visual Studio Tools for Office Help.
 
 
-namespace Outlook2010_cal_export_adding
+namespace Outlook2010_cal_export_addin
 {
     [ComVisible(true)]
     public class context_menu_export : Office.IRibbonExtensibility
@@ -46,7 +46,7 @@ namespace Outlook2010_cal_export_adding
             string ribbonXML = String.Empty;
             if (ribbonID == "Microsoft.Outlook.Explorer" || ribbonID == "Microsoft.Outlook.Appointment")
             {
-                ribbonXML = GetResourceText("Outlook2010_cal_export_adding.context_menu_export.xml");
+                ribbonXML = GetResourceText("Outlook2010_cal_export_addin.context_menu_export.xml");
             }
             return ribbonXML;
             //return "ContextMenuCalendarView";
@@ -67,7 +67,7 @@ namespace Outlook2010_cal_export_adding
             // Get the current view of the calendar, in order to bound the exported calendar items to that view.
             DateTime dateStart;
             DateTime dateEnd;
-            Outlook.Explorer expl = Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.ActiveExplorer();
+            Outlook.Explorer expl = Outlook2010_cal_export_addin.Globals.ThisAddIn.Application.ActiveExplorer();
             Outlook.View view = expl.CurrentView as Outlook.View;
             if (view.ViewType == Outlook.OlViewType.olCalendarView)
             {
@@ -103,13 +103,20 @@ namespace Outlook2010_cal_export_adding
             }
 
                     // Access the calendar and export events:
-
-            //Outlook.Folder calFolder = 
-            //    Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar) 
-            //    as Outlook.Folder;
-            Outlook.Folder calFolder = 
-                Outlook2010_cal_export_adding.Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder 
-                as Outlook.Folder;      // Get currently viewed folder (and not default folder as commented-out above)
+            Outlook.Folder calFolder;
+            try     // Get currently viewed folder
+            {
+                calFolder =
+                    Outlook2010_cal_export_addin.Globals.ThisAddIn.Application.ActiveExplorer().CurrentFolder
+                    as Outlook.Folder;     
+            }
+            catch   // Get default folder upon fail
+            {
+                calFolder =
+                    Outlook2010_cal_export_addin.Globals.ThisAddIn.Application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderCalendar)
+                    as Outlook.Folder;
+            }
+            
 
             // Get the items in the wanted range of dates:
             Outlook.Items rangeAppts = GetAppointmentsInRange(calFolder, dateStart, dateEnd);
@@ -135,8 +142,8 @@ namespace Outlook2010_cal_export_adding
                     // Outputs event's wanted properties:
                     var newLine = string.Format(@"""{0}"",""{1}"",""{2}"",""{3}"",""{4}"",""{5}"",""{6}"",""{7}"",""{8}""",
                                                 item.Subject.ToString(), 
-                                                item.Start.Date.ToString("dd-MM-yyyy"), item.Start.TimeOfDay.ToString(),
-                                                item.End.Date.ToString("dd-MM-yyyy"), item.End.TimeOfDay.ToString(), 
+                                                item.Start.Date.ToString("MM-dd-yyyy"), item.Start.TimeOfDay.ToString(),
+                                                item.End.Date.ToString("MM-dd-yyyy"), item.End.TimeOfDay.ToString(), 
                                                 item.AllDayEvent.ToString(), 
                                                 apptBody, item.Location, "");
                     
@@ -146,7 +153,7 @@ namespace Outlook2010_cal_export_adding
 
                 // Write to file:
                 string desktopath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                string fileName = "Agenda_" + dateStart.Date.ToString("dd-MM") +"~" + dateEnd.Date.ToString("dd-MM") + ".csv";
+                string fileName = "Schedule_" + dateStart.Date.ToString("dd-MM") +"~" + dateEnd.Date.ToString("dd-MM") + ".csv";
                 desktopath = System.IO.Path.Combine(desktopath, fileName);
 
                 try
